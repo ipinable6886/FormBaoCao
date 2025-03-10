@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BÁO CÁO CHUYÊN MÔN</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: auto;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 5px;
+            margin-top: 5px;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 10px;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <label>Chọn Trường:</label>
+        <select id="school" onchange="updateTemplate()">
+            <option value="THPT THU THIEM">THPT THU THIEM</option>
+            <option value="THPT GIONG ONG TO">THPT GIONG ONG TO</option>
+        </select>
+        <h2>BÁO CÁO CHUYÊN MÔN</h2>
+
+        <label>Tên Giáo Viên:</label>
+        <input type="text" id="teacher" value="H.T.C.Thắng">
+
+        <label>Lớp:</label>
+        <input type="text" id="room" value="">
+
+        <label>Môn:</label>
+        <input type="text" id="subject" value="">
+
+        <label>Tài liệu dạy:</label>
+        <input type="text" id="lecture" value="THĐD">
+
+        <label>Nội dung dạy:</label>
+        <input type="text" id="lesson" value="">
+
+        <label>Số tiết dự kiến:</label>
+        <input type="text" id="expect" value="60">
+
+        <label>Số tiết đã dạy:</label>
+        <input type="text" id="learned" value="">
+
+        <label>Số lần hoàn thành 100% TH:</label>
+        <input type="text" id="timeOfTotalFinished" value="0">
+     
+        <label>Tỷ lệ kết quả điểm Gmetrix:</label>
+        <input type="text" id="GmetrixScore" value="GMT 1(  0 %), GMT 2(  0 %)">
+
+        <button onclick="generateReport()">Xuất Báo Cáo</button>
+
+        <textarea id="reportOutput" readonly></textarea>
+    </div>
+
+    <script>
+        function updateTemplate() {
+            const school = document.getElementById('school').value;
+
+            if (school == 'THPT THU THIEM') {
+                
+                totalMachines = "49 + 1 GV";
+                cooling = "02 máy lạnh không có hơi mát";
+                subject = "MOS WORD 2019";
+            } else if (school == 'THPT GIONG ONG TO') {
+               
+                totalMachines = "48 + 1 GV";
+                subject = "MOS EXCEL 2019";
+            }
+
+           
+            document.getElementById('subject').value = subject;
+        }
+
+        document.addEventListener("DOMContentLoaded", updateTemplate);
+
+        function generateReport() {
+            const report = `BÁO CÁO CHUYÊN MÔN\n` +
+                `- Tên Giáo Viên: ${document.getElementById('teacher').value}\n` +
+                `- Lớp: ${document.getElementById('room').value}\n` +
+                `- Môn: ${document.getElementById('subject').value}\n` +
+                `- Tài liệu dạy: ${document.getElementById('lecture').value}\n` +
+                `- Nội dung dạy: ${document.getElementById('lesson').value}\n` +
+                `- Số tiết dự kiến: ${document.getElementById('expect').value}\n` +
+                `- Số tiết đã dạy: ${document.getElementById('learned').value}\n`+
+                `- Số lần hoàn thành 100% TH: ${document.getElementById('timeOfTotalFinished').value}\n`+
+                `- Tỷ lệ kết quả điểm Gmetrix: ${document.getElementById('GmetrixScore').value}`;                
+            
+                document.getElementById('reportOutput').value = report;
+            
+                copyToClipboard(report);
+        }
+
+        function copyToClipboard(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            textArea.setSelectionRange(0, 99999);
+            try {
+                document.execCommand("copy");
+                alert("Báo cáo đã được sao chép vào clipboard!");
+            } catch (err) {
+                console.error("Lỗi khi sao chép: ", err);
+            }
+            document.body.removeChild(textArea);
+        }
+    </script>
+</body>
+
+</html>

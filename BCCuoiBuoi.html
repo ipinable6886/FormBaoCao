@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Báo Cáo Cuối Buổi Dạy</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: auto;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 5px;
+            margin-top: 5px;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 10px;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <label>Chọn Trường:</label>
+        <select id="school" onchange="updateTemplate()">
+            <option value="THPT THU THIEM">THPT THU THIEM</option>
+            <option value="THPT GIONG ONG TO">THPT GIONG ONG TO</option>
+        </select>
+
+        <h2>BÁO CÁO CUỐI BUỔI DẠY</h2>
+
+        <label>Tên Giáo Viên:</label>
+        <input type="text" id="teacher" value="H.T.C.Thắng">
+
+        <label>Tên Trợ Giảng:</label>
+        <input type="text" id="assistant" value="Không">
+
+        <label>Phòng Máy:</label>
+        <input type="text" id="room" value="">
+
+        <label>Tổng số máy:</label>
+        <input type="text" id="totalMachines" value="0">
+
+        <label>Số lượng HS:</label>
+        <input type="text" id="numberofStudents" value="">
+
+        <label>Tỷ lệ học sinh có tài liệu:</label>
+        <input type="text" id="check0" value="0%">
+
+        <label>Tổng số máy bị lỗi:</label>
+        <input type="text" id="faultyMachines" value="">
+
+        <label>Số máy còn thiếu cho HS:</label>
+        <input type="number" id="missingMachines" value="0">
+
+        <label>Tình trạng Netsupport:</label>
+        <input type="text" id="netsupport" value="Tốt">
+
+        <label>Tình trạng Loa, Âm ly:</label>
+        <input type="text" id="audio" value="Tốt">
+
+        <label>Tình trạng máy lạnh, máy quạt:</label>
+        <input type="text" id="cooling" value="Bình thường">
+
+        <label>Đã tắt các thiết bị điện chưa:</label>
+        <input type="text" id="check1" value="Rồi">
+
+        <label>HS sắp xếp ghế ngồi gọn gàng:</label>
+        <input type="text" id="check2" value="Rồi">
+
+        <label>HS vệ sinh phòng máy:</label>
+        <input type="text" id="check3" value="Rồi">
+
+        <label>Tuân thủ nội quy của HS:</label>
+        <input type="text" id="check4" value="Tốt">
+
+        <label>Danh sách vi phạm:</label>
+        <input type="text" id="check5" value="Không">
+
+        <button onclick="generateReport()">Xuất Báo Cáo</button>
+
+        <textarea id="reportOutput" readonly></textarea>
+    </div>
+
+    <script>
+        function updateTemplate() {
+            const school = document.getElementById('school').value;
+            let room = "";
+            let totalMachines = "0";
+            let cooling = "Bình thường";
+
+            if (school == 'THPT THU THIEM') {
+                room = "PM2";
+                totalMachines = "49 + 1 GV";
+                cooling = "02 máy lạnh không có hơi mát";
+            } else if (school == 'THPT GIONG ONG TO') {
+                room = "PM3";
+                totalMachines = "48 + 1 GV";
+            }
+
+            document.getElementById('room').value = room;
+            document.getElementById('totalMachines').value = totalMachines;
+            document.getElementById('cooling').value = cooling;
+        }
+
+        document.addEventListener("DOMContentLoaded", updateTemplate);
+
+        function generateReport() {
+
+            let countFaultyMachines = 0;
+            countFaultyMachines = document.getElementById('faultyMachines').value.split("PC").length-1;
+            
+            const report = ` BÁO CÁO CUÔI BUỔI DẠY \n` +
+                `- Tên Giáo Viên: ${document.getElementById('teacher').value}\n` +
+                `- Tên Trợ Giảng: ${document.getElementById('assistant').value}\n` +
+                `- Phòng Máy: ${document.getElementById('room').value}\n` +
+                `- Tổng số máy: ${document.getElementById('totalMachines').value}\n` +
+                `- Số lượng HS: ${document.getElementById('numberofStudents').value}\n` +
+                `- Tỷ lệ học sinh có tài liệu: 0% \n` +
+                `- Tổng số máy bị lỗi: ${countFaultyMachines} (${document.getElementById('faultyMachines').value})\n` +
+                `- Số máy còn thiếu cho HS: ${document.getElementById('missingMachines').value}\n` +
+                `- Tình trạng Netsupport: ${document.getElementById('netsupport').value}\n` +
+                `- Tình trạng Loa, Âm ly: ${document.getElementById('audio').value}\n` +
+                `- Tình trạng máy lạnh, máy quạt: ${document.getElementById('cooling').value}\n` +
+                `- Đã tắt các thiết bị điện chưa: ${document.getElementById('check1').value}\n` +
+                `- HS sắp xếp ghế ngồi gọn gàng: ${document.getElementById('check2').value}\n` +
+                `- HS vệ sinh phòng máy: ${document.getElementById('check3').value}\n` +
+                `- Tuân thủ nội quy của HS: ${document.getElementById('check4').value}\n` +
+                `- Danh sách vi phạm: ${document.getElementById('check5').value}`;
+
+            document.getElementById('reportOutput').value = report;
+            copyToClipboard(report);
+        }
+
+        function copyToClipboard(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            textArea.setSelectionRange(0, 99999);
+            try {
+                document.execCommand("copy");
+                alert("Báo cáo đã được sao chép vào clipboard!");
+            } catch (err) {
+                console.error("Lỗi khi sao chép: ", err);
+            }
+            document.body.removeChild(textArea);
+        }
+    </script>
+</body>
+
+</html>
