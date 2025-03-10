@@ -48,8 +48,9 @@
     <div class="container">
         <label>Chọn Trường:</label>
         <select id="school" onchange="updateTemplate()">
-            <option value="THPT THU THIEM">THPT THU THIEM</option>
-            <option value="THPT GIONG ONG TO">THPT GIONG ONG TO</option>
+            <option value="THPT THU THIEM">THPT THỦ THIÊM</option>
+            <option value="THPT GIONG ONG TO">THPT GIỒNG ÔNG TỐ</option>
+            <option value="TH TRAN VAN VAN">TH TRẦN VĂN VÂN</option>
         </select>
 
         <h2>BÁO CÁO CUỐI BUỔI DẠY</h2>
@@ -64,7 +65,7 @@
         <input type="text" id="room" value="">
 
         <label>Tổng số máy:</label>
-        <input type="text" id="totalMachines" value="0">
+        <input type="text" id="totalMachines" value="">
 
         <label>Số lượng HS:</label>
         <input type="text" id="numberofStudents" value="">
@@ -73,7 +74,7 @@
         <input type="text" id="check0" value="0%">
 
         <label>Tổng số máy bị lỗi:</label>
-        <input type="text" id="faultyMachines" value="">
+        <input type="text" id="faultyMachines" value="" placeholder="Chỉ cần nhập máy lỗi, không điền số máy">
 
         <label>Số máy còn thiếu cho HS:</label>
         <input type="number" id="missingMachines" value="0">
@@ -112,20 +113,42 @@
             const school = document.getElementById('school').value;
             let room = "";
             let totalMachines = "0";
+            let faultyMachines = "";
             let cooling = "Bình thường";
-
+            let missingMachines = 0;
+            
             if (school == 'THPT THU THIEM') {
                 room = "PM2";
                 totalMachines = "49 + 1 GV";
+                netsupport = "Tốt";
+                audio = "Tốt";
                 cooling = "02 máy lạnh không có hơi mát";
+
             } else if (school == 'THPT GIONG ONG TO') {
                 room = "PM3";
                 totalMachines = "48 + 1 GV";
+                netsupport = "Tốt";
+                audio = "Tốt";
             }
 
+            else if (school == 'TH TRAN VAN VAN') {
+                room = "Học tại lớp";
+                totalMachines = 0;
+                cooling = "";
+                faultyMachines = "";
+               
+                netsupport = "";
+                audio = "";
+                cooling = "";
+            }
             document.getElementById('room').value = room;
             document.getElementById('totalMachines').value = totalMachines;
             document.getElementById('cooling').value = cooling;
+            document.getElementById('faultyMachines').value = faultyMachines;
+            document.getElementById('missingMachines').value = missingMachines || 0;
+            document.getElementById('netsupport').value = netsupport;
+            document.getElementById('audio').value = audio;
+
         }
 
         document.addEventListener("DOMContentLoaded", updateTemplate);
@@ -133,16 +156,20 @@
         function generateReport() {
 
             let countFaultyMachines = 0;
-            countFaultyMachines = document.getElementById('faultyMachines').value.split("PC").length-1;
+            countFaultyMachines = document.getElementById('faultyMachines').value.split("PC").length - 1;
+            if (countFaultyMachines == 0)
+                faultyMachines = document.getElementById('faultyMachines').value;
+            else
+                faultyMachines = '(' + document.getElementById('faultyMachines').value + ')';
             
-            const report = ` BÁO CÁO CUÔI BUỔI DẠY \n` +
+            const report = ` BÁO CÁO CUỐI BUỔI DẠY \n` +
                 `- Tên Giáo Viên: ${document.getElementById('teacher').value}\n` +
                 `- Tên Trợ Giảng: ${document.getElementById('assistant').value}\n` +
                 `- Phòng Máy: ${document.getElementById('room').value}\n` +
                 `- Tổng số máy: ${document.getElementById('totalMachines').value}\n` +
                 `- Số lượng HS: ${document.getElementById('numberofStudents').value}\n` +
                 `- Tỷ lệ học sinh có tài liệu: 0% \n` +
-                `- Tổng số máy bị lỗi: ${countFaultyMachines} (${document.getElementById('faultyMachines').value})\n` +
+                `- Tổng số máy bị lỗi: ${countFaultyMachines} ${faultyMachines}\n` +
                 `- Số máy còn thiếu cho HS: ${document.getElementById('missingMachines').value}\n` +
                 `- Tình trạng Netsupport: ${document.getElementById('netsupport').value}\n` +
                 `- Tình trạng Loa, Âm ly: ${document.getElementById('audio').value}\n` +

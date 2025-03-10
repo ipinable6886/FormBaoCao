@@ -1,56 +1,88 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Báo Cáo Đầu Buổi Dạy</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .container { max-width: 400px; margin: auto; }
-        label { font-weight: bold; display: block; margin-top: 10px; }
-        input, select { width: 100%; padding: 5px; margin-top: 5px; }
-        button { margin-top: 15px; padding: 10px; width: 100%; cursor: pointer; }
-        textarea { width: 100%; height: 150px; margin-top: 10px; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: auto;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 5px;
+            margin-top: 5px;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 10px;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            margin-top: 10px;
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
         <label>Chọn Trường:</label>
         <select id="school" onchange="updateTemplate()">
-            <option value="THPT THU THIEM">THPT THU THIEM</option>
-            <option value="THPT GIONG ONG TO">THPT GIONG ONG TO</option>
-        </select>  
+            <option value="THPT THU THIEM">THPT THỦ THIÊM</option>
+            <option value="THPT GIONG ONG TO">THPT GIỒNG ÔNG TỐ</option>
+            <option value="TH TRAN VAN VAN">TH TRẦN VÂN VÂN</option>
+        </select>
         <h2>BÁO CÁO ĐẦU BUỔI DẠY</h2>
-              
+
         <label>Tên Giáo Viên:</label>
         <input type="text" id="teacher" value="H.T.C.Thắng">
-        
+
         <label>Tên Trợ Giảng:</label>
         <input type="text" id="assistant" value="Không">
-        
+
         <label>Phòng Máy:</label>
         <input type="text" id="room" value="">
-        
+
         <label>Tổng số máy:</label>
         <input type="text" id="totalMachines" value="0">
-        
+
         <label>Tổng số máy bị lỗi:</label>
-        <input type="text" id="faultyMachines" value="">
-        
+        <input type="text" id="faultyMachines" value="" placeholder="Chỉ cần nhập máy lỗi, không điền số máy">
+
         <label>Số máy còn thiếu cho HS:</label>
         <input type="number" id="missingMachines" value="0">
-        
+
         <label>Tình trạng Netsupport:</label>
         <input type="text" id="netsupport" value="Tốt">
-        
+
         <label>Tình trạng Loa, Âm ly:</label>
         <input type="text" id="audio" value="Tốt">
-        
+
         <label>Tình trạng máy lạnh, máy quạt:</label>
         <input type="text" id="cooling" value="Bình thường">
-        
+
         <button onclick="generateReport()">Xuất Báo Cáo</button>
-        
+
         <textarea id="reportOutput" readonly></textarea>
     </div>
 
@@ -59,20 +91,41 @@
             const school = document.getElementById('school').value;
             let room = "";
             let totalMachines = "0";
+            let faultyMachines = "";
             let cooling = "Bình thường";
 
             if (school == 'THPT THU THIEM') {
                 room = "PM2";
                 totalMachines = "49 + 1 GV";
+                netsupport = "Tốt";
+                audio = "Tốt";
                 cooling = "02 máy lạnh không có hơi mát";
             } else if (school == 'THPT GIONG ONG TO') {
                 room = "PM3";
                 totalMachines = "48 + 1 GV";
+                netsupport = "Tốt";
+                audio = "Tốt";
             }
-            
+
+            else if (school == 'TH TRAN VAN VAN') {
+                room = "Học tại lớp";
+                totalMachines = 0;
+                cooling = "";
+                faultyMachines = "";
+                missingMachines = 0;
+                netsupport = "";
+                audio = "";
+                cooling = "";
+            }
+
             document.getElementById('room').value = room;
             document.getElementById('totalMachines').value = totalMachines;
             document.getElementById('cooling').value = cooling;
+            document.getElementById('faultyMachines').value = faultyMachines;
+            document.getElementById('missingMachines').value = missingMachines;
+            document.getElementById('netsupport').value = netsupport;
+            document.getElementById('audio').value = audio;
+
         }
 
         document.addEventListener("DOMContentLoaded", updateTemplate);
@@ -80,19 +133,22 @@
         function generateReport() {
 
             let countFaultyMachines = 0;
-            countFaultyMachines = document.getElementById('faultyMachines').value.split("PC").length-1;
-
+            countFaultyMachines = document.getElementById('faultyMachines').value.split("PC").length - 1;
+            if (countFaultyMachines == 0)
+                faultyMachines = document.getElementById('faultyMachines').value;
+            else
+                faultyMachines = '(' + document.getElementById('faultyMachines').value + ')';
             const report = `BÁO CÁO ĐẦU BUỔI DẠY \n` +
                 `- Tên Giáo Viên: ${document.getElementById('teacher').value}\n` +
                 `- Tên Trợ Giảng: ${document.getElementById('assistant').value}\n` +
                 `- Phòng Máy: ${document.getElementById('room').value}\n` +
                 `- Tổng số máy: ${document.getElementById('totalMachines').value}\n` +
-                `- Tổng số máy bị lỗi: ${countFaultyMachines} (${document.getElementById('faultyMachines').value})\n` +
+                `- Tổng số máy bị lỗi: ${countFaultyMachines} ${faultyMachines}\n` +
                 `- Số máy còn thiếu cho HS: ${document.getElementById('missingMachines').value}\n` +
                 `- Tình trạng Netsupport: ${document.getElementById('netsupport').value}\n` +
                 `- Tình trạng Loa, Âm ly: ${document.getElementById('audio').value}\n` +
                 `- Tình trạng máy lạnh, máy quạt: ${document.getElementById('cooling').value}`;
-            
+
             document.getElementById('reportOutput').value = report;
             copyToClipboard(report);
         }
@@ -113,4 +169,5 @@
         }
     </script>
 </body>
+
 </html>
